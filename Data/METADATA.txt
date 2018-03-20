@@ -1,0 +1,2 @@
+TV_IrrigationPODTable is the point of diversion data for water rights in the Treasure Valley, Idaho.
+LBB is the shape file for the Lower Boise Basin
