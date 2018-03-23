@@ -18,26 +18,29 @@ shinyUI(fluidPage(
   # Sidebar with a slider input for number of bins 
   sidebarLayout(
     sidebarPanel(
-      p("Press here to generate random inflow to the reservoir"),
-      
+      helpText("Press here to generate random inflow to the reservoir"),
       actionButton("q", "Random Inflow", icon = NULL),
-       
+      br(),
+      textOutput("precip"),
+      br(),
+      br(),
+    
       sliderInput("int",
                    "Initial Reservoir Storage (%):",
                    min = 10,
                    max = 100,
                    value = 40),
-       
+      br(),
        h4("Reservoir Manager Types"),
-       p("Red: Manager that is risk averse always aims to have levels some percentage below the rule curve."),
+       p("Red: Manager that is less risk averse always aims to have levels 5% above the rule curve."),
       sliderInput("R1p",
-                  "Manager 1 percentage above the rule curve:",
+                  "Manager 1, percentage above the rule curve:",
                   min = 1,
                   max = 20,
                   value = 5),
-       p("Blue: The less risk averse manager always aims to have levels 5% above the rule curve."),
+       p("Blue: The risk averse manager always aims to have levels some percentage below the rule curve."),
       sliderInput("R2p",
-                  "Manager 2 percentage below the rule curve:",
+                  "Manager 2, percentage below the rule curve:",
                   min = 1,
                   max = 20,
                   value = 5),
@@ -49,8 +52,8 @@ shinyUI(fluidPage(
     
     # Show a plot of the generated distribution
     mainPanel(
-       plotOutput("qplot"),
-       plotOutput("disPlot")
+       plotOutput("qplot", width = "80%"),
+       plotOutput("disPlot", width = "80%")
        #add either table or bar chart of total precip here
     )
   )

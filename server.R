@@ -3,6 +3,15 @@
 
 library(shiny)
 library(ggplot2)
+#library(raster)
+#library(sp)
+#library(rgdal)
+
+irrPOD<- shapefile("Data/TV_IrrigationPODTable.shp")
+irrPODdata<-data.frame(irrPOD)
+
+LBB<- shapefile("Data/LowerBoiseRiverBasin.shp")
+WRrules<- read.table("Data/WRrules.csv")
 
 resOut<-function(int, R1p, R2p, q_in) {
     # a reservoir has a storage capacity of 100% Each "reservoir" corresponds to a different management scenario
@@ -13,14 +22,10 @@ resOut<-function(int, R1p, R2p, q_in) {
     res[1:12,5]=c(1:12)
     res[,6]<-rc[1:12]
     # discharge is a funtion of the reservoir managers attributes
-    q_out<- matrix(data= NA, nrow = 11, ncol = 4)
+    q_out<- matrix(data= NA, nrow = 12, ncol = 4)
     
     for(i in 1:11){
 
-      #if (res[i,1] >= rc[i+1]){
-      #  q_out[i,1] = res[i,1]+q_in[i] - rc[i+1]
-      #} else {q_out[i,1] = 0}
-    
       #rules for less risk averse manager (always +5% of rule curve)
       R1pi<-(1+R1p/100)
       
@@ -56,7 +61,7 @@ resOut<-function(int, R1p, R2p, q_in) {
       res[i+1,3]=res[i,3]+q_in[i]-q_out[i,3]
       res[i+1,4]=res[i,4]+q_in[i]-q_out[i,4]
     }
-    resL<-data.frame(res, q_in)
+    resL<-data.frame(res, q_in, q_out)
     #return(resL)
 }
 
@@ -64,6 +69,8 @@ shinyServer(function(input, output) {
   #generate values for random inflow to the reservoir and plot them
   #this button makes the stuff in the brackets happen
   Q_in <- eventReactive(input$q,{runif(12, min = 2, max = 20)})
+  
+  output$precip <-renderText({paste("Total Inflow:", round(sum(Q_in()), digits = 2))})
   
   output$qplot <- renderPlot({
     
@@ -75,6 +82,8 @@ shinyServer(function(input, output) {
       geom_bar(stat='identity', width=.85, fill="blue") +
       theme(axis.text.x = element_text(size=12, angle=45))+
       scale_y_continuous(name="Inflow to Reservoir (% of total volume)", trans="reverse")
+    
+  
   })
   
 
@@ -94,7 +103,19 @@ shinyServer(function(input, output) {
       ylab("Reservoir Level (%)") 
       #ylim(0,100)
       #scale_x_discrete(breaks =c("1","2","3","4","5","6","7","8","9","10","11","12"), labels= monthLab)
-    
+      #scale_colour_discrete(name ="Reservoir Level", breaks=c("X6", "X1", "X2", "X3", "X4"), labels=c("Rule Curve", "Manager 1", "Manager 2", "Manager 3", "Manager 4"))
    })
   
+  #output$map <- renderPlot({
+   # if (curRes$X2.1[10] < max(WRrules$MaxD)){
+    #  nada<-(WRrules$Year[WRrules$MaxD >= curRes$X2.1[10]])
+    #}
+    
+  #  old <- irrPOD[irrPODdata$yr < min(nada),]
+  #  young <-irrPOD[irrPODdata$yr >= min(nada),]
+  
+    #plot(LBB)
+   # plot(old, add=TRUE, pch= 20, col='grey')
+    #plot(young, add= TRUE, pch = 20, col = "purple")
+  #})
 })
