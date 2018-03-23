@@ -7,11 +7,11 @@ library(ggplot2)
 #library(sp)
 #library(rgdal)
 
-irrPOD<- shapefile("Data/TV_IrrigationPODTable.shp")
-irrPODdata<-data.frame(irrPOD)
+#irrPOD<- shapefile("Data/TV_IrrigationPODTable.shp")
+#irrPODdata<-data.frame(irrPOD)
 
-LBB<- shapefile("Data/LowerBoiseRiverBasin.shp")
-WRrules<- read.table("Data/WRrules.csv")
+#LBB<- shapefile("Data/LowerBoiseRiverBasin.shp")
+#WRrules<- read.table("Data/WRrules.csv")
 
 resOut<-function(int, R1p, R2p, q_in) {
     # a reservoir has a storage capacity of 100% Each "reservoir" corresponds to a different management scenario
